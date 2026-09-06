@@ -11,18 +11,23 @@ A simple internal tool for uploading client social content by month and approvin
 ## Stack
 
 - Next.js (App Router) + Tailwind
-- Postgres via Prisma (works with any Postgres provider; Vercel Marketplace → Neon is the default)
+- Postgres via Prisma (Neon, provisioned through the Vercel Marketplace)
 - Vercel Blob for storing uploaded media
+
+Live at: https://post-upload-app-five.vercel.app
+Repo: https://github.com/sonderclicks/PostApp
+Vercel project: `sonder-clicks-projects/post-upload-app`
 
 ## Local setup
 
-1. Copy `.env.example` to `.env` and fill in:
-   - `DATABASE_URL` — a Postgres connection string
-   - `TEAM_PASSWORD` — the password your team will use to log in
-   - `AUTH_SECRET` — any long random string (used to sign the login session cookie)
-   - `BLOB_READ_WRITE_TOKEN` — from your Vercel Blob store (only needed for local dev;
-     Vercel sets this automatically in deployments)
-2. Push the schema to your database:
+1. Make sure you're linked to the Vercel project and have pulled env vars:
+   ```bash
+   vercel link
+   vercel env pull
+   ```
+   This creates `.env.local` with `DATABASE_URL`, `BLOB_READ_WRITE_TOKEN`,
+   `TEAM_PASSWORD`, and `AUTH_SECRET`.
+2. Push the schema to the database (only needed after changing `prisma/schema.prisma`):
    ```bash
    npm run db:push
    ```
@@ -30,18 +35,22 @@ A simple internal tool for uploading client social content by month and approvin
    ```bash
    npm run dev
    ```
-4. Open http://localhost:3000 and log in with `TEAM_PASSWORD`.
+4. Open http://localhost:3000 and log in with the `TEAM_PASSWORD` value.
 
-## Deploying on Vercel
+## Deploying
 
-1. Push this repo to GitHub, then import it into Vercel.
-2. In the Vercel project, add:
-   - A **Postgres** database (Storage tab → Marketplace → e.g. Neon) — this sets
-     `DATABASE_URL` automatically.
-   - A **Blob** store (Storage tab → Blob) — this sets `BLOB_READ_WRITE_TOKEN`
-     automatically.
-3. Add `TEAM_PASSWORD` and `AUTH_SECRET` as environment variables in the Vercel project
-   settings.
-4. Run `npm run db:push` once (locally with `vercel env pull` first, or via a one-off
-   `vercel` deployment) to create the tables in the production database.
-5. Point your custom domain at the Vercel project (Settings → Domains).
+Pushing to `main` on GitHub auto-deploys to production (GitHub is connected to the
+Vercel project). To deploy manually instead: `vercel --prod`.
+
+## Adding a new client to Vercel from scratch (reference)
+
+If you ever need to set this up under a different Vercel project:
+
+1. `vercel link`
+2. `vercel blob create-store <name> --access public --yes`
+3. `vercel integration add neon` (requires accepting Neon's marketplace terms in the
+   browser first — the CLI will print a link if needed)
+4. `vercel env add TEAM_PASSWORD production` (repeat for `preview` and `development`)
+5. `vercel env add AUTH_SECRET production` (repeat for `preview` and `development`;
+   generate one with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`)
+6. `vercel env pull` then `npm run db:push`
