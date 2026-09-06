@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  posts     Post[]
+}
+
+enum PostStatus {
+  pending
+  approved
+  needs_changes
+}
+
+enum MediaType {
+  image
+  video
+}
+
+model Post {
+  id           String     @id @default(cuid())
+  clientId     String
+  client       Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  month        String // "2026-09"
+  mediaUrl     String
+  mediaType    MediaType
+  caption      String?
+  status       PostStatus @default(pending)
+  feedbackNote String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([clientId, month])
+}

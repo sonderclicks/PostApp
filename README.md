@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Content Approvals
 
-## Getting Started
+A simple internal tool for uploading client social content by month and approving it.
 
-First, run the development server:
+- One shared team password gates the whole app (no individual accounts).
+- Each **client** has a folder-like page. Content is grouped by **month**, with a
+  previous/next navigator (defaults to the current month).
+- Each post (photo or video) can be marked **Pending**, **Approved**, or **Needs
+  Changes** (with a note explaining what to fix).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Next.js (App Router) + Tailwind
+- Postgres via Prisma (works with any Postgres provider; Vercel Marketplace → Neon is the default)
+- Vercel Blob for storing uploaded media
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Local setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Copy `.env.example` to `.env` and fill in:
+   - `DATABASE_URL` — a Postgres connection string
+   - `TEAM_PASSWORD` — the password your team will use to log in
+   - `AUTH_SECRET` — any long random string (used to sign the login session cookie)
+   - `BLOB_READ_WRITE_TOKEN` — from your Vercel Blob store (only needed for local dev;
+     Vercel sets this automatically in deployments)
+2. Push the schema to your database:
+   ```bash
+   npm run db:push
+   ```
+3. Run the dev server:
+   ```bash
+   npm run dev
+   ```
+4. Open http://localhost:3000 and log in with `TEAM_PASSWORD`.
 
-## Learn More
+## Deploying on Vercel
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push this repo to GitHub, then import it into Vercel.
+2. In the Vercel project, add:
+   - A **Postgres** database (Storage tab → Marketplace → e.g. Neon) — this sets
+     `DATABASE_URL` automatically.
+   - A **Blob** store (Storage tab → Blob) — this sets `BLOB_READ_WRITE_TOKEN`
+     automatically.
+3. Add `TEAM_PASSWORD` and `AUTH_SECRET` as environment variables in the Vercel project
+   settings.
+4. Run `npm run db:push` once (locally with `vercel env pull` first, or via a one-off
+   `vercel` deployment) to create the tables in the production database.
+5. Point your custom domain at the Vercel project (Settings → Domains).

@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code harness state
+.claude/
+
+# agent skill caches (auto-installed by CLI integrations)
+.agents/
+skills-lock.json
+
+.vercel
+.env*
