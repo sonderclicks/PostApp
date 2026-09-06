@@ -57,19 +57,19 @@ export default function UploadForm({ clientId, month }: { clientId: string; mont
         name="file"
         accept="image/*,video/*"
         required
-        className="text-sm"
+        className="text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-black/5 file:px-3 file:py-2 file:text-sm file:font-medium dark:file:bg-white/10"
       />
       <input
         ref={captionInputRef}
         type="text"
         name="caption"
         placeholder="Caption (optional)"
-        className="flex-1 rounded-lg border border-black/15 px-3 py-2 text-sm outline-none focus:border-black/40 dark:border-white/15 dark:focus:border-white/40"
+        className="flex-1 rounded-lg border border-black/15 px-3 py-2.5 text-base outline-none focus:border-black/40 dark:border-white/15 dark:focus:border-white/40"
       />
       <button
         type="submit"
         disabled={uploading}
-        className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-white dark:text-black"
+        className="rounded-lg bg-black px-4 py-2.5 text-sm font-medium text-white disabled:opacity-50 dark:bg-white dark:text-black"
       >
         {uploading ? "Uploading…" : "Upload"}
       </button>

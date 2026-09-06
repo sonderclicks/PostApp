@@ -34,18 +34,18 @@ export default async function HomePage() {
 
       <form
         action={createClient}
-        className="flex max-w-sm gap-2 rounded-xl border border-black/10 p-4 dark:border-white/10"
+        className="flex flex-col gap-2 rounded-xl border border-black/10 p-4 sm:max-w-sm sm:flex-row dark:border-white/10"
       >
         <input
           type="text"
           name="name"
           placeholder="New client name"
           required
-          className="flex-1 rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-black/40 dark:border-white/15 dark:focus:border-white/40"
+          className="flex-1 rounded-lg border border-black/15 px-3 py-2.5 text-base outline-none focus:border-black/40 dark:border-white/15 dark:focus:border-white/40"
         />
         <button
           type="submit"
-          className="rounded-lg bg-black px-4 py-2 font-medium text-white dark:bg-white dark:text-black"
+          className="whitespace-nowrap rounded-lg bg-black px-4 py-2.5 font-medium text-white dark:bg-white dark:text-black"
         >
           Add client
         </button>

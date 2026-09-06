@@ -21,7 +21,7 @@ export default function LoginPage() {
           name="password"
           placeholder="Password"
           autoFocus
-          className="mb-3 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-black/40 dark:border-white/15 dark:focus:border-white/40"
+          className="mb-3 w-full rounded-lg border border-black/15 px-3 py-2.5 text-base outline-none focus:border-black/40 dark:border-white/15 dark:focus:border-white/40"
         />
         {state?.error && (
           <p className="mb-3 text-sm text-red-600 dark:text-red-400">{state.error}</p>
@@ -29,7 +29,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={pending}
-          className="w-full rounded-lg bg-black px-3 py-2 font-medium text-white disabled:opacity-50 dark:bg-white dark:text-black"
+          className="w-full rounded-lg bg-black px-3 py-2.5 font-medium text-white disabled:opacity-50 dark:bg-white dark:text-black"
         >
           {pending ? "Checking…" : "Log in"}
         </button>

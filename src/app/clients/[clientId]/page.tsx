@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { currentMonth, formatMonth, shiftMonth } from "@/lib/month";
 import UploadForm from "@/components/UploadForm";
-import PostCard from "@/components/PostCard";
+import PostGrid from "@/components/PostGrid";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +23,7 @@ export default async function ClientPage({
 
   const posts = await prisma.post.findMany({
     where: { clientId, month },
-    orderBy: { createdAt: "asc" },
+    orderBy: { order: "asc" },
   });
 
   const prevMonth = shiftMonth(month, -1);
@@ -52,29 +52,35 @@ export default async function ClientPage({
         </Link>
       </div>
 
-      <div className="mb-8">
-        <UploadForm clientId={clientId} month={month} />
+      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="flex-1">
+          <UploadForm clientId={clientId} month={month} />
+        </div>
+        {posts.length > 0 && (
+          <a
+            href={`/api/clients/${clientId}/download?month=${month}`}
+            className="whitespace-nowrap rounded-lg border border-black/15 px-4 py-2 text-sm font-medium dark:border-white/15"
+          >
+            Download all ({posts.length})
+          </a>
+        )}
       </div>
 
       {posts.length === 0 ? (
         <p className="text-sm text-black/60 dark:text-white/60">No posts for this month yet.</p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-          {posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={{
-                id: post.id,
-                clientId: post.clientId,
-                mediaUrl: post.mediaUrl,
-                mediaType: post.mediaType,
-                caption: post.caption,
-                status: post.status,
-                feedbackNote: post.feedbackNote,
-              }}
-            />
-          ))}
-        </div>
+        <PostGrid
+          clientId={clientId}
+          posts={posts.map((post) => ({
+            id: post.id,
+            clientId: post.clientId,
+            mediaUrl: post.mediaUrl,
+            mediaType: post.mediaType,
+            caption: post.caption,
+            status: post.status,
+            feedbackNote: post.feedbackNote,
+          }))}
+        />
       )}
     </div>
   );
